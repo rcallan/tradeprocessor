@@ -6,6 +6,7 @@
 #include <map>
 #include <fstream>
 #include <iostream>
+#include <fstream>
 
 template <class T>
 class Calc {
@@ -13,8 +14,8 @@ public:
     void process(std::vector<std::string>& entry) {
         static_cast<T*>(this)->processEntry(entry);
     }
-    void write(char* path) {
-        static_cast<T*>(this)->writeOutput(path);
+    void write(std::ofstream& os, std::string& k) {
+        static_cast<T*>(this)->writeOutput(os, k);
     }
 };
 
@@ -29,17 +30,9 @@ public:
         }
         maxGapMap[entry[1]].prevTime = ts;
     }
-    // probably would like to change this so it accepts a ref to an ofstream and only writes its own piece to it and does not close it
-    void writeOutput(char* path) {
-        std::ofstream outputFile(path);
 
-        for (const auto& [k, v] : maxGapMap) {
-            outputFile << k;
-            outputFile << ",";
-            outputFile << v.maxGap;
-            outputFile << "\n";
-        }
-        outputFile.close();
+    void writeOutput(std::ofstream& os, std::string& k) {
+        os << maxGapMap[k].maxGap << ",";
     }
 private:
     struct MaxGapInfo {
@@ -58,16 +51,8 @@ public:
         volMap[entry[1]] += entryVol;
     }
 
-    void writeOutput(char* path) {
-        std::ofstream outputFile(path);
-
-        for (const auto& [k, v] : volMap) {
-            outputFile << k;
-            outputFile << ",";
-            outputFile << v;
-            outputFile << "\n";
-        }
-        outputFile.close();
+    void writeOutput(std::ofstream& os, std::string& k) {
+        os << volMap[k] << ",";
     }
 private:
     std::map<std::string, long> volMap;
@@ -80,16 +65,8 @@ public:
         if (entryPrice > priceMap[entry[1]]) priceMap[entry[1]] = entryPrice;
     }
 
-    void writeOutput(char* path) {
-        std::ofstream outputFile(path);
-
-        for (const auto& [k, v] : priceMap) {
-            outputFile << k;
-            outputFile << ",";
-            outputFile << v;
-            outputFile << "\n";
-        }
-        outputFile.close();
+    void writeOutput(std::ofstream& os, std::string& k) {
+        os << priceMap[k] << ",";
     }
 private:
     std::map<std::string, long> priceMap;
@@ -105,16 +82,8 @@ public:
         wapMap[entry[1]].wap = wapMap[entry[1]].numer / wapMap[entry[1]].denom;
     }
 
-    void writeOutput(char* path) {
-        std::ofstream outputFile(path);
-
-        for (const auto& [k, v] : wapMap) {
-            outputFile << k;
-            outputFile << ",";
-            outputFile << v.wap;
-            outputFile << "\n";
-        }
-        outputFile.close();
+    void writeOutput(std::ofstream& os, std::string& k) {
+        os << wapMap[k].wap << ",";
     }
 private:
     struct WapInfo {
