@@ -1,9 +1,17 @@
-#include "StreamOps.h"
+#include "StreamProcessor.h"
+#include <iostream>
 
 int main(int argc, char** argv) {
-    char* path = "exampledata/input.csv";
+    char path[] = "exampledata/input.csv";
 
-    StreamOps sp(path);
+    StreamProcessor sp(path);
 
-    sp.processStream();
+    EntryProcessor* ep = new EntryProcessor();
+
+    // probably could set calcs here
+
+    sp.setEntryProcessor(ep);
+
+    sp.process();
+    sp.write();
 }
