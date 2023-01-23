@@ -15,10 +15,10 @@ public:
     void process(std::vector<std::string>& entry, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
         static_cast<T*>(this)->processEntry(entry, calcInfoMap);
     }
-    void write(std::ofstream& os, std::string& k, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
-        static_cast<T*>(this)->writeOutput(os, k, calcInfoMap);
+
+    std::string getMapKey() {
+        return static_cast<T*>(this)->getCalcMapKey();
     }
-    
 };
 
 class MaxTimeGapCalc : public Calc<MaxTimeGapCalc> {
@@ -34,9 +34,7 @@ public:
         calcInfoMap[entry[1]]["maxGap.prevTime"] = ts;
     }
 
-    void writeOutput(std::ofstream& os, std::string& k, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
-        os << calcInfoMap[k][mapKey] << ",";
-    }
+    std::string getCalcMapKey() { return mapKey; }
 
 private:
     std::string mapKey {"maxGap"};
@@ -49,9 +47,7 @@ public:
         calcInfoMap[entry[1]][mapKey] += entryVol;
     }
 
-    void writeOutput(std::ofstream& os, std::string& k, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
-        os << calcInfoMap[k][mapKey] << ",";
-    }
+    std::string getCalcMapKey() { return mapKey; }
 
 private:
     std::string mapKey {"vol"};
@@ -64,9 +60,7 @@ public:
         if (entryPrice > calcInfoMap[entry[1]][mapKey]) calcInfoMap[entry[1]][mapKey] = entryPrice;
     }
 
-    void writeOutput(std::ofstream& os, std::string& k, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
-        os << calcInfoMap[k][mapKey] << ",";
-    }
+    std::string getCalcMapKey() { return mapKey; }
 
 private:
     std::string mapKey {"maxPrice"};
@@ -82,9 +76,7 @@ public:
         calcInfoMap[entry[1]][mapKey] = calcInfoMap[entry[1]]["wap.numer"] / calcInfoMap[entry[1]]["wap.denom"];
     }
 
-    void writeOutput(std::ofstream& os, std::string& k, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
-        os << calcInfoMap[k][mapKey] << ",";
-    }
+    std::string getCalcMapKey() { return mapKey; }
 
 private:
     std::string mapKey {"weightedAvgPrice"};

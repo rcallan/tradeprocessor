@@ -56,9 +56,14 @@ public:
     void write() {
         std::ofstream outputFile(writePath);
 
-        for (std::pair<std::string, std::unordered_map<std::string, long>> kv : calcInfoMap) {
-            outputFile << kv.first << ",";
-            tupleWrite(outputFile, kv.first);
+        tupleGetMapKeys();
+
+        for (const auto& [k, v] : calcInfoMap) {
+            outputFile << k << ",";
+            for (int i = 0; i < mapKeys.size() - 1; i++) {
+                outputFile << calcInfoMap[k][mapKeys[i]] << ",";
+            }
+            outputFile << calcInfoMap[k][mapKeys[mapKeys.size() - 1]];
             outputFile << "\n";
         }
 
@@ -76,11 +81,11 @@ public:
     }
 
     template <int n = std::tuple_size<T>::value>
-    inline void tupleWrite(std::ofstream& os, std::string& k) {
+    inline void tupleGetMapKeys() {
         if constexpr (n > 1) {
-            tupleWrite<n - 1>(os, k);
+            tupleGetMapKeys<n - 1>();
         }
-        std::get<n - 1>(calcs)->write(os, k, calcInfoMap);
+        mapKeys.emplace_back(std::get<n - 1>(calcs)->getMapKey());
     }
 
     void setWritePath(char* path) { writePath = path; }
@@ -95,6 +100,7 @@ private:
     T calcs;
 
     std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
+    std::vector<std::string> mapKeys;
 };
 
 #endif
