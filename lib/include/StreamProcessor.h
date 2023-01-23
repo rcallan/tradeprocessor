@@ -56,10 +56,9 @@ public:
     void write() {
         std::ofstream outputFile(writePath);
 
-        for (auto [k, v] : calcInfoMap) {
-            outputFile << k << ",";
-            std::string temp = std::string(k);
-            tupleWrite(outputFile, temp);
+        for (std::pair<std::string, std::unordered_map<std::string, long>> kv : calcInfoMap) {
+            outputFile << kv.first << ",";
+            tupleWrite(outputFile, kv.first);
             outputFile << "\n";
         }
 
