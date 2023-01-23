@@ -49,9 +49,6 @@ public:
                 std::vector<std::string> entry;
                 LineSplitter::split(value, ",", entry);
                 tupleProcess(entry);
-                symbols.insert(entry[1]);
-            } else {
-
             }
         }
     }
@@ -59,9 +56,10 @@ public:
     void write() {
         std::ofstream outputFile(writePath);
 
-        for (std::string k : symbols) {
+        for (auto [k, v] : calcInfoMap) {
             outputFile << k << ",";
-            tupleWrite(outputFile, k);
+            std::string temp = std::string(k);
+            tupleWrite(outputFile, temp);
             outputFile << "\n";
         }
 
@@ -75,7 +73,7 @@ public:
         if constexpr (n > 1) {
             tupleProcess<n - 1>(entry);
         }
-        std::get<n - 1>(calcs)->process(entry);
+        std::get<n - 1>(calcs)->process(entry, calcInfoMap);
     }
 
     template <int n = std::tuple_size<T>::value>
@@ -83,17 +81,21 @@ public:
         if constexpr (n > 1) {
             tupleWrite<n - 1>(os, k);
         }
-        std::get<n - 1>(calcs)->write(os, k);
+        std::get<n - 1>(calcs)->write(os, k, calcInfoMap);
     }
 
-    void insertSymbol(std::string& s) { symbols.insert(s); }
     void setWritePath(char* path) { writePath = path; }
+
+    int getCalcInfo(std::string&& symbol, std::string&& key) {
+        return calcInfoMap[symbol][key];
+    }
 
 private:
     char* readPath;
     char* writePath;
     T calcs;
-    std::set<std::string> symbols {};
+
+    std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 };
 
 #endif

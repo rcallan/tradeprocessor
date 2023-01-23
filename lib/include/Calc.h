@@ -12,26 +12,19 @@
 template <typename T>
 class Calc {
 public:
-    void process(std::vector<std::string>& entry) {
-        static_cast<T*>(this)->processEntry(entry);
+    void process(std::vector<std::string>& entry, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
+        static_cast<T*>(this)->processEntry(entry, calcInfoMap);
     }
-    void write(std::ofstream& os, std::string& k) {
-        static_cast<T*>(this)->writeOutput(os, k);
+    void write(std::ofstream& os, std::string& k, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
+        static_cast<T*>(this)->writeOutput(os, k, calcInfoMap);
     }
-protected:
-    std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
+    
 };
 
 class MaxTimeGapCalc : public Calc<MaxTimeGapCalc> {
 public:
-    void processEntry(std::vector<std::string>& entry) {
+    void processEntry(std::vector<std::string>& entry, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
         long ts = std::stol(entry[0]);
-        // if (maxGapMap.count(entry[1]) == 0) {
-        //     maxGapMap[entry[1]] = MaxGapInfo(0, ts);
-        // } else if (ts - maxGapMap[entry[1]].prevTime > maxGapMap[entry[1]].maxGap) {
-        //     maxGapMap[entry[1]].maxGap = ts - maxGapMap[entry[1]].prevTime;
-        // }
-        // maxGapMap[entry[1]].prevTime = ts;
         if (calcInfoMap[entry[1]].count(mapKey) == 0) {
             calcInfoMap[entry[1]][mapKey] = 0;
             calcInfoMap[entry[1]]["maxGap.prevTime"] = ts;
@@ -41,75 +34,59 @@ public:
         calcInfoMap[entry[1]]["maxGap.prevTime"] = ts;
     }
 
-    void writeOutput(std::ofstream& os, std::string& k) {
+    void writeOutput(std::ofstream& os, std::string& k, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
         os << calcInfoMap[k][mapKey] << ",";
     }
 
-    int getMaxGap(std::string&& symbol) { return calcInfoMap[symbol][mapKey]; }
-
 private:
-    // struct MaxGapInfo {
-    //     MaxGapInfo() = default;
-    //     MaxGapInfo(long mg, long pt) : maxGap(mg), prevTime(pt) { }
-    //     long maxGap;
-    //     long prevTime;
-    // };
-    // std::map<std::string, MaxGapInfo> maxGapMap { };
     std::string mapKey {"maxGap"};
 };
 
 class VolumeCalc : public Calc<VolumeCalc> {
 public:
-    void processEntry(std::vector<std::string>& entry) {
+    void processEntry(std::vector<std::string>& entry, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
         long entryVol = std::stol(entry[2]);
-        volMap[entry[1]] += entryVol;
+        calcInfoMap[entry[1]][mapKey] += entryVol;
     }
 
-    void writeOutput(std::ofstream& os, std::string& k) {
-        os << volMap[k] << ",";
+    void writeOutput(std::ofstream& os, std::string& k, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
+        os << calcInfoMap[k][mapKey] << ",";
     }
+
 private:
-    std::map<std::string, long> volMap;
     std::string mapKey {"vol"};
 };
 
 class MaxPriceCalc : public Calc<MaxPriceCalc> {
 public:
-    void processEntry(std::vector<std::string>& entry) {
+    void processEntry(std::vector<std::string>& entry, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
         long entryPrice = std::stol(entry[3]);
-        if (entryPrice > priceMap[entry[1]]) priceMap[entry[1]] = entryPrice;
+        if (entryPrice > calcInfoMap[entry[1]][mapKey]) calcInfoMap[entry[1]][mapKey] = entryPrice;
     }
 
-    void writeOutput(std::ofstream& os, std::string& k) {
-        os << priceMap[k] << ",";
+    void writeOutput(std::ofstream& os, std::string& k, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
+        os << calcInfoMap[k][mapKey] << ",";
     }
+
 private:
-    std::map<std::string, long> priceMap;
     std::string mapKey {"maxPrice"};
 };
 
 class WeightedAvgPriceCalc : public Calc<WeightedAvgPriceCalc> {
 public:
-    void processEntry(std::vector<std::string>& entry) {
+    void processEntry(std::vector<std::string>& entry, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
         long vol = std::stol(entry[2]);
         long price = std::stol(entry[3]);
-        wapMap[entry[1]].numer += vol * price;
-        wapMap[entry[1]].denom += vol;
-        wapMap[entry[1]].wap = wapMap[entry[1]].numer / wapMap[entry[1]].denom;
+        calcInfoMap[entry[1]]["wap.numer"] += vol * price;
+        calcInfoMap[entry[1]]["wap.denom"] += vol;
+        calcInfoMap[entry[1]][mapKey] = calcInfoMap[entry[1]]["wap.numer"] / calcInfoMap[entry[1]]["wap.denom"];
     }
 
-    void writeOutput(std::ofstream& os, std::string& k) {
-        os << wapMap[k].wap << ",";
+    void writeOutput(std::ofstream& os, std::string& k, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
+        os << calcInfoMap[k][mapKey] << ",";
     }
+
 private:
-    struct WapInfo {
-        WapInfo() = default;
-        WapInfo(long n, long d) : numer(n), denom(d) { }
-        long numer;
-        long denom;
-        long wap;
-    };
-    std::map<std::string, WapInfo> wapMap;
     std::string mapKey {"weightedAvgPrice"};
 };
 

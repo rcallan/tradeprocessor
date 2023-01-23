@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv) {
     char inputPath[] = "exampledata/input.csv";
-    // char path[] = "exampledata/example.csv";
+    // char inputPath[] = "exampledata/example.csv";
     char outputPath[] = "exampledata/output.csv";
 
     typedef std::tuple<

@@ -5,9 +5,7 @@
 #include "Calc.h"
 #include <tuple>
 
-TEST(CalcsTest, TestProcess)
-{
-    std::vector<std::vector<std::string>> entries = {
+std::vector<std::vector<std::string>> entries = {
         {"52924702", "aaa", "13", "1136"},
         {"52924702", "aac", "20", "477"},
         {"52925641", "aab", "31", "907"},
@@ -24,36 +22,82 @@ TEST(CalcsTest, TestProcess)
         {"aac", "3081", "41", "559", "638"}
     };
 
+TEST(CalcsTest, TestMaxTimeGapCalc)
+{
     typedef std::tuple<
-        std::shared_ptr<Calc<MaxTimeGapCalc>>, 
-        std::shared_ptr<Calc<VolumeCalc>>, 
-        std::shared_ptr<Calc<WeightedAvgPriceCalc>>, 
-        std::shared_ptr<Calc<MaxPriceCalc>>
-    > tupleforcalcs;
+        std::shared_ptr<Calc<MaxTimeGapCalc>>
+    > CalcTypes;
 
-    StreamProcessor<tupleforcalcs> sp;
+    StreamProcessor<CalcTypes> sp;
 
     std::shared_ptr<Calc<MaxTimeGapCalc>> mtgc = std::make_shared<MaxTimeGapCalc>();
-    std::shared_ptr<Calc<VolumeCalc>> vc = std::make_shared<VolumeCalc>();
-    std::shared_ptr<Calc<WeightedAvgPriceCalc>> wapc = std::make_shared<WeightedAvgPriceCalc>();
-    std::shared_ptr<Calc<MaxPriceCalc>> mpc = std::make_shared<MaxPriceCalc>();
 
-    auto calcs = std::make_tuple(mtgc, vc, wapc, mpc);
-
-    sp.setCalcs(calcs);
+    sp.setCalcs(std::make_tuple(mtgc));
 
     for (int i = 0; i < entries.size(); i++) {
         sp.tupleProcess(entries[i]);
-        sp.insertSymbol(entries[i][1]);
     }
 
-    // char writePath[] = "../exampledata/testoutput.csv";
-    // sp.setWritePath(writePath);
-
-    // sp.write();
-
-    // EXPECT_EQ(static_cast<MaxTimeGapCalc*>(mtgc)->getMaxGap("aaa"), 5787);
+    EXPECT_EQ(sp.getCalcInfo("aaa", "maxGap"), 5787);
     
 }
 
-// could probably add a test for each calc we have
+TEST(CalcsTest, TestVolCalc)
+{
+    typedef std::tuple<
+        std::shared_ptr<Calc<VolumeCalc>>
+    > CalcTypes;
+
+    StreamProcessor<CalcTypes> sp;
+
+    std::shared_ptr<Calc<VolumeCalc>> vc = std::make_shared<VolumeCalc>();
+
+    sp.setCalcs(std::make_tuple(vc));
+
+    for (int i = 0; i < entries.size(); i++) {
+        sp.tupleProcess(entries[i]);
+    }
+
+    EXPECT_EQ(sp.getCalcInfo("aac", "vol"), 41);
+    
+}
+
+TEST(CalcsTest, TestWapCalc)
+{
+    typedef std::tuple<
+        std::shared_ptr<Calc<WeightedAvgPriceCalc>>
+    > CalcTypes;
+
+    StreamProcessor<CalcTypes> sp;
+
+    std::shared_ptr<Calc<WeightedAvgPriceCalc>> wapc = std::make_shared<WeightedAvgPriceCalc>();
+
+    sp.setCalcs(std::make_tuple(wapc));
+
+    for (int i = 0; i < entries.size(); i++) {
+        sp.tupleProcess(entries[i]);
+    }
+
+    EXPECT_EQ(sp.getCalcInfo("aab", "weightedAvgPrice"), 810);
+    
+}
+
+TEST(CalcsTest, TestMaxPriceCalc)
+{
+    typedef std::tuple<
+        std::shared_ptr<Calc<MaxPriceCalc>>
+    > CalcTypes;
+
+    StreamProcessor<CalcTypes> sp;
+
+    std::shared_ptr<Calc<MaxPriceCalc>> mpc = std::make_shared<MaxPriceCalc>();
+
+    sp.setCalcs(std::make_tuple(mpc));
+
+    for (int i = 0; i < entries.size(); i++) {
+        sp.tupleProcess(entries[i]);
+    }
+
+    EXPECT_EQ(sp.getCalcInfo("aaa", "maxPrice"), 1222);
+    
+}
