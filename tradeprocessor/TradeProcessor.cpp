@@ -4,21 +4,27 @@
 #include <iostream>
 
 int main(int argc, char** argv) {
-    char path[] = "exampledata/input.csv";
+    char inputPath[] = "exampledata/input.csv";
+    // char path[] = "exampledata/example.csv";
+    char outputPath[] = "exampledata/output.csv";
 
-    StreamProcessor sp(path);
+    typedef std::tuple<
+        std::shared_ptr<Calc<MaxTimeGapCalc>>,
+        std::shared_ptr<Calc<VolumeCalc>>,
+        std::shared_ptr<Calc<WeightedAvgPriceCalc>>,
+        std::shared_ptr<Calc<MaxPriceCalc>>
+    > CalcTypes;
 
-    EntryProcessor* ep = new EntryProcessor();
+    StreamProcessor<CalcTypes> sp(inputPath, outputPath);
 
-    Calc<MaxTimeGapCalc>* mtgc = new MaxTimeGapCalc();
-    Calc<VolumeCalc>* vc = new VolumeCalc();
-    Calc<WeightedAvgPriceCalc>* wapc = new WeightedAvgPriceCalc();
-    Calc<MaxPriceCalc>* mpc = new MaxPriceCalc();
+    std::shared_ptr<Calc<MaxTimeGapCalc>> mtgc = std::make_shared<MaxTimeGapCalc>();
+    std::shared_ptr<Calc<VolumeCalc>> vc = std::make_shared<VolumeCalc>();
+    std::shared_ptr<Calc<WeightedAvgPriceCalc>> wapc = std::make_shared<WeightedAvgPriceCalc>();
+    std::shared_ptr<Calc<MaxPriceCalc>> mpc = std::make_shared<MaxPriceCalc>();
 
-    ep->calcs = std::make_tuple(mtgc, vc, wapc, mpc);
-
-    sp.setEntryProcessor(ep);
+    sp.setCalcs(std::make_tuple(mtgc, vc, wapc, mpc));
 
     sp.process();
     sp.write();
+
 }
