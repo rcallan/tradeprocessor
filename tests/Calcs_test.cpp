@@ -28,7 +28,9 @@ TEST(CalcsTest, TestMaxTimeGapCalc)
         std::shared_ptr<Calc<MaxTimeGapCalc>>
     > CalcTypes;
 
-    StreamProcessor<CalcTypes> sp;
+    std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
+
+    StreamProcessor<CalcTypes> sp(calcInfoMap);
 
     std::shared_ptr<Calc<MaxTimeGapCalc>> mtgc = std::make_shared<MaxTimeGapCalc>();
 
@@ -48,7 +50,9 @@ TEST(CalcsTest, TestVolCalc)
         std::shared_ptr<Calc<VolumeCalc>>
     > CalcTypes;
 
-    StreamProcessor<CalcTypes> sp;
+    std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
+
+    StreamProcessor<CalcTypes> sp(calcInfoMap);
 
     std::shared_ptr<Calc<VolumeCalc>> vc = std::make_shared<VolumeCalc>();
 
@@ -68,7 +72,9 @@ TEST(CalcsTest, TestWapCalc)
         std::shared_ptr<Calc<WeightedAvgPriceCalc>>
     > CalcTypes;
 
-    StreamProcessor<CalcTypes> sp;
+    std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
+
+    StreamProcessor<CalcTypes> sp(calcInfoMap);
 
     std::shared_ptr<Calc<WeightedAvgPriceCalc>> wapc = std::make_shared<WeightedAvgPriceCalc>();
 
@@ -88,7 +94,9 @@ TEST(CalcsTest, TestMaxPriceCalc)
         std::shared_ptr<Calc<MaxPriceCalc>>
     > CalcTypes;
 
-    StreamProcessor<CalcTypes> sp;
+    std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
+
+    StreamProcessor<CalcTypes> sp(calcInfoMap);
 
     std::shared_ptr<Calc<MaxPriceCalc>> mpc = std::make_shared<MaxPriceCalc>();
 

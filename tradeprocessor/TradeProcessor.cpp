@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Calc.h"
 #include <iostream>
+#include "CalcInfoWriter.h"
 
 int main(int argc, char** argv) {
     char inputPath[] = "exampledata/input.csv";
@@ -15,7 +16,9 @@ int main(int argc, char** argv) {
         std::shared_ptr<Calc<MaxPriceCalc>>
     > CalcTypes;
 
-    StreamProcessor<CalcTypes> sp(inputPath, outputPath);
+    std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
+
+    StreamProcessor<CalcTypes> sp(inputPath, calcInfoMap);
 
     std::shared_ptr<Calc<MaxTimeGapCalc>> mtgc = std::make_shared<MaxTimeGapCalc>();
     std::shared_ptr<Calc<VolumeCalc>> vc = std::make_shared<VolumeCalc>();
@@ -24,7 +27,10 @@ int main(int argc, char** argv) {
 
     sp.setCalcs(std::make_tuple(mtgc, vc, wapc, mpc));
 
+    auto mapKeys = sp.getMapKeys();
+    CalcInfoWriter ciw(outputPath, calcInfoMap, mapKeys);
+
     sp.process();
-    sp.write();
+    ciw.write();
 
 }

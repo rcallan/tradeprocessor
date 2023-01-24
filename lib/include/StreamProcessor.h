@@ -34,9 +34,9 @@ concept tuple_like = !std::is_reference_v<T>
 template<tuple_like T>
 class StreamProcessor {
 public:
-    StreamProcessor() = default;
-    StreamProcessor(char* rp) : readPath(rp) { }
-    StreamProcessor(char* rp, char* wp) : readPath(rp), writePath(wp) { }
+    StreamProcessor() = delete;
+    StreamProcessor(std::map<std::string, std::unordered_map<std::string, long>>& cim) : calcInfoMap(cim) { }
+    StreamProcessor(char* rp, std::map<std::string, std::unordered_map<std::string, long>>& cim) : readPath(rp), calcInfoMap(cim) { }
     
     void process() {
         std::ifstream file(readPath);
@@ -51,23 +51,6 @@ public:
                 tupleProcess(entry);
             }
         }
-    }
-
-    void write() {
-        std::ofstream outputFile(writePath);
-
-        tupleGetMapKeys();
-
-        for (const auto& [k, v] : calcInfoMap) {
-            outputFile << k << ",";
-            for (int i = 0; i < mapKeys.size() - 1; i++) {
-                outputFile << calcInfoMap[k][mapKeys[i]] << ",";
-            }
-            outputFile << calcInfoMap[k][mapKeys[mapKeys.size() - 1]];
-            outputFile << "\n";
-        }
-
-        outputFile.close();
     }
 
     void setCalcs(auto cs) {calcs = cs;}
@@ -88,7 +71,10 @@ public:
         mapKeys.emplace_back(std::get<n - 1>(calcs)->getMapKey());
     }
 
-    void setWritePath(char* path) { writePath = path; }
+    std::vector<std::string> getMapKeys() {
+        tupleGetMapKeys();
+        return mapKeys;
+    }
 
     int getCalcInfo(std::string&& symbol, std::string&& key) {
         return calcInfoMap[symbol][key];
@@ -96,10 +82,9 @@ public:
 
 private:
     char* readPath;
-    char* writePath;
     T calcs;
 
-    std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
+    std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap;
     std::vector<std::string> mapKeys;
 };
 
