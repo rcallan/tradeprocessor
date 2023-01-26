@@ -4,6 +4,7 @@
 #include "StreamProcessor.h"
 #include "Calc.h"
 #include <tuple>
+#include "GetCalcs.h"
 
 std::vector<std::vector<std::string>> entries = {
     {"52924702", "aaa", "13", "1136"},
@@ -24,88 +25,60 @@ std::vector<std::vector<std::string>> entries = {
 
 TEST(CalcsTest, TestMaxTimeGapCalc)
 {
-    typedef std::tuple<
-        std::shared_ptr<Calc<MaxTimeGapCalc>>
-    > CalcTypes;
+    typedef std::tuple<MaxTimeGapCalc> CalcTypes;
 
     std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 
-    StreamProcessor<CalcTypes> sp(calcInfoMap);
-
-    std::shared_ptr<Calc<MaxTimeGapCalc>> mtgc = std::make_shared<MaxTimeGapCalc>();
-
-    sp.setCalcs(std::make_tuple(mtgc));
+    StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
 
     for (int i = 0; i < entries.size(); i++) {
         sp.tupleProcess(entries[i]);
     }
 
     EXPECT_EQ(sp.getCalcInfo("aaa", "maxGap"), 5787);
-    
 }
 
 TEST(CalcsTest, TestVolCalc)
 {
-    typedef std::tuple<
-        std::shared_ptr<Calc<VolumeCalc>>
-    > CalcTypes;
+    typedef std::tuple<VolumeCalc> CalcTypes;
 
     std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 
-    StreamProcessor<CalcTypes> sp(calcInfoMap);
-
-    std::shared_ptr<Calc<VolumeCalc>> vc = std::make_shared<VolumeCalc>();
-
-    sp.setCalcs(std::make_tuple(vc));
+    StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
 
     for (int i = 0; i < entries.size(); i++) {
         sp.tupleProcess(entries[i]);
     }
 
-    EXPECT_EQ(sp.getCalcInfo("aac", "vol"), 41);
-    
+    EXPECT_EQ(sp.getCalcInfo("aac", "vol"), 41);   
 }
 
 TEST(CalcsTest, TestWapCalc)
 {
-    typedef std::tuple<
-        std::shared_ptr<Calc<WeightedAvgPriceCalc>>
-    > CalcTypes;
+    typedef std::tuple<WeightedAvgPriceCalc> CalcTypes;
 
     std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 
-    StreamProcessor<CalcTypes> sp(calcInfoMap);
-
-    std::shared_ptr<Calc<WeightedAvgPriceCalc>> wapc = std::make_shared<WeightedAvgPriceCalc>();
-
-    sp.setCalcs(std::make_tuple(wapc));
+    StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
 
     for (int i = 0; i < entries.size(); i++) {
         sp.tupleProcess(entries[i]);
     }
 
     EXPECT_EQ(sp.getCalcInfo("aab", "weightedAvgPrice"), 810);
-    
 }
 
 TEST(CalcsTest, TestMaxPriceCalc)
 {
-    typedef std::tuple<
-        std::shared_ptr<Calc<MaxPriceCalc>>
-    > CalcTypes;
+    typedef std::tuple<MaxPriceCalc> CalcTypes;
 
     std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 
-    StreamProcessor<CalcTypes> sp(calcInfoMap);
-
-    std::shared_ptr<Calc<MaxPriceCalc>> mpc = std::make_shared<MaxPriceCalc>();
-
-    sp.setCalcs(std::make_tuple(mpc));
+    StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
 
     for (int i = 0; i < entries.size(); i++) {
         sp.tupleProcess(entries[i]);
     }
 
     EXPECT_EQ(sp.getCalcInfo("aaa", "maxPrice"), 1222);
-    
 }

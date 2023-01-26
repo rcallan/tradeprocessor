@@ -25,7 +25,7 @@ concept tuple_like = !std::is_reference_v<T>
         std::integral_constant<std::size_t, std::tuple_size_v<T>>
     >;
   } && []<std::size_t... N>(std::index_sequence<N...>) { 
-    return (has_tuple_element<T, N> && ...); 
+    return (has_tuple_element<T, N> && ...);
   }(std::make_index_sequence<std::tuple_size_v<T>>());
 
 // restricting template parameter types to tuple like types
@@ -35,7 +35,8 @@ template<tuple_like T>
 class StreamProcessor {
 public:
     StreamProcessor() = delete;
-    StreamProcessor(std::map<std::string, std::unordered_map<std::string, long>>& cim) : calcInfoMap(cim) { }
+    StreamProcessor(auto& cim) : calcInfoMap(cim) { }
+    StreamProcessor(auto& cim, auto cs) : calcs(cs), calcInfoMap(cim) { }
     StreamProcessor(char* rp, auto& cim) : readPath(rp), calcInfoMap(cim) { }
     StreamProcessor(char* rp, auto& cim, auto cs) : readPath(rp), calcs(cs), calcInfoMap(cim) { }
     
