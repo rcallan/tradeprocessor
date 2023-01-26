@@ -3,34 +3,20 @@
 #include "Calc.h"
 #include <iostream>
 #include "CalcInfoWriter.h"
+#include "GetCalcs.h"
 
 int main(int argc, char** argv) {
     char inputPath[] = "exampledata/input.csv";
     // char inputPath[] = "exampledata/example.csv";
     char outputPath[] = "exampledata/output.csv";
 
-    typedef std::tuple<
-        std::shared_ptr<Calc<MaxTimeGapCalc>>,
-        std::shared_ptr<Calc<VolumeCalc>>,
-        std::shared_ptr<Calc<WeightedAvgPriceCalc>>,
-        std::shared_ptr<Calc<MaxPriceCalc>>
-    > CalcTypes;
+    typedef std::tuple<MaxTimeGapCalc, VolumeCalc, WeightedAvgPriceCalc, MaxPriceCalc> CalcTypes;
 
     std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 
-    StreamProcessor<CalcTypes> sp(inputPath, calcInfoMap);
-
-    std::shared_ptr<Calc<MaxTimeGapCalc>> mtgc = std::make_shared<MaxTimeGapCalc>();
-    std::shared_ptr<Calc<VolumeCalc>> vc = std::make_shared<VolumeCalc>();
-    std::shared_ptr<Calc<WeightedAvgPriceCalc>> wapc = std::make_shared<WeightedAvgPriceCalc>();
-    std::shared_ptr<Calc<MaxPriceCalc>> mpc = std::make_shared<MaxPriceCalc>();
-
-    sp.setCalcs(std::make_tuple(mtgc, vc, wapc, mpc));
-
-    auto mapKeys = sp.getMapKeys();
-    CalcInfoWriter ciw(outputPath, calcInfoMap, mapKeys);
+    StreamProcessor<GetCalcs<CalcTypes>::type> sp(inputPath, calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
+    CalcInfoWriter ciw(outputPath, calcInfoMap, sp.getMapKeys());
 
     sp.process();
     ciw.write();
-
 }

@@ -21,8 +21,8 @@ concept tuple_like = !std::is_reference_v<T>
   && requires(T t) { 
     typename std::tuple_size<T>::type; 
     requires std::derived_from<
-      std::tuple_size<T>, 
-      std::integral_constant<std::size_t, std::tuple_size_v<T>>
+        std::tuple_size<T>, 
+        std::integral_constant<std::size_t, std::tuple_size_v<T>>
     >;
   } && []<std::size_t... N>(std::index_sequence<N...>) { 
     return (has_tuple_element<T, N> && ...); 
@@ -36,7 +36,8 @@ class StreamProcessor {
 public:
     StreamProcessor() = delete;
     StreamProcessor(std::map<std::string, std::unordered_map<std::string, long>>& cim) : calcInfoMap(cim) { }
-    StreamProcessor(char* rp, std::map<std::string, std::unordered_map<std::string, long>>& cim) : readPath(rp), calcInfoMap(cim) { }
+    StreamProcessor(char* rp, auto& cim) : readPath(rp), calcInfoMap(cim) { }
+    StreamProcessor(char* rp, auto& cim, auto cs) : readPath(rp), calcs(cs), calcInfoMap(cim) { }
     
     void process() {
         std::ifstream file(readPath);
