@@ -25,13 +25,13 @@ class MaxTimeGapCalc : public Calc<MaxTimeGapCalc> {
 public:
     void processEntry(std::vector<std::string>& entry, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
         long ts = std::stol(entry[0]);
-        if (calcInfoMap[entry[1]].count(mapKey) == 0) {
-            calcInfoMap[entry[1]][mapKey] = 0;
-            calcInfoMap[entry[1]]["maxGap.prevTime"] = ts;
-        } else if (ts - calcInfoMap[entry[1]]["maxGap.prevTime"] > calcInfoMap[entry[1]][mapKey]) {
-            calcInfoMap[entry[1]][mapKey] = ts - calcInfoMap[entry[1]]["maxGap.prevTime"];
+        auto& temp = calcInfoMap[entry[1]];
+        if (temp.count(mapKey) == 0) {
+            temp[mapKey] = 0;
+        } else if (ts - temp["maxGap.prevTime"] > temp[mapKey]) {
+            temp[mapKey] = ts - temp["maxGap.prevTime"];
         }
-        calcInfoMap[entry[1]]["maxGap.prevTime"] = ts;
+        temp["maxGap.prevTime"] = ts;
     }
 
     std::string getCalcMapKey() { return mapKey; }
@@ -57,7 +57,8 @@ class MaxPriceCalc : public Calc<MaxPriceCalc> {
 public:
     void processEntry(std::vector<std::string>& entry, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
         long entryPrice = std::stol(entry[3]);
-        if (entryPrice > calcInfoMap[entry[1]][mapKey]) calcInfoMap[entry[1]][mapKey] = entryPrice;
+        auto& temp = calcInfoMap[entry[1]][mapKey];
+        if (entryPrice > temp) temp = entryPrice;
     }
 
     std::string getCalcMapKey() { return mapKey; }
@@ -71,9 +72,10 @@ public:
     void processEntry(std::vector<std::string>& entry, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
         long vol = std::stol(entry[2]);
         long price = std::stol(entry[3]);
-        calcInfoMap[entry[1]]["wap.numer"] += vol * price;
-        calcInfoMap[entry[1]]["wap.denom"] += vol;
-        calcInfoMap[entry[1]][mapKey] = calcInfoMap[entry[1]]["wap.numer"] / calcInfoMap[entry[1]]["wap.denom"];
+        auto& temp = calcInfoMap[entry[1]];
+        temp["wap.numer"] += vol * price;
+        temp["wap.denom"] += vol;
+        temp[mapKey] = temp["wap.numer"] / temp["wap.denom"];
     }
 
     std::string getCalcMapKey() { return mapKey; }
