@@ -12,7 +12,7 @@
 template <typename T>
 class Calc {
 public:
-    void process(std::vector<std::string>& entry, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
+    void process(std::vector<std::string>& entry, std::unordered_map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
         static_cast<T*>(this)->processEntry(entry, calcInfoMap);
     }
 
@@ -23,7 +23,7 @@ public:
 
 class MaxTimeGapCalc : public Calc<MaxTimeGapCalc> {
 public:
-    void processEntry(std::vector<std::string>& entry, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
+    void processEntry(std::vector<std::string>& entry, std::unordered_map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
         long ts = std::stol(entry[0]);
         auto& temp = calcInfoMap[entry[1]];
         if (temp.count(mapKey) == 0) {
@@ -42,7 +42,7 @@ private:
 
 class VolumeCalc : public Calc<VolumeCalc> {
 public:
-    void processEntry(std::vector<std::string>& entry, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
+    void processEntry(std::vector<std::string>& entry, std::unordered_map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
         long entryVol = std::stol(entry[2]);
         calcInfoMap[entry[1]][mapKey] += entryVol;
     }
@@ -55,7 +55,7 @@ private:
 
 class MaxPriceCalc : public Calc<MaxPriceCalc> {
 public:
-    void processEntry(std::vector<std::string>& entry, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
+    void processEntry(std::vector<std::string>& entry, std::unordered_map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
         long entryPrice = std::stol(entry[3]);
         auto& temp = calcInfoMap[entry[1]][mapKey];
         if (entryPrice > temp) temp = entryPrice;
@@ -69,7 +69,7 @@ private:
 
 class WeightedAvgPriceCalc : public Calc<WeightedAvgPriceCalc> {
 public:
-    void processEntry(std::vector<std::string>& entry, std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
+    void processEntry(std::vector<std::string>& entry, std::unordered_map<std::string, std::unordered_map<std::string, long>>& calcInfoMap) {
         long vol = std::stol(entry[2]);
         long price = std::stol(entry[3]);
         auto& temp = calcInfoMap[entry[1]];

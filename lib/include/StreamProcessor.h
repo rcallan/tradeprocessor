@@ -37,8 +37,8 @@ public:
     StreamProcessor() = delete;
     StreamProcessor(auto& cim) : calcInfoMap(cim) { }
     StreamProcessor(auto& cim, auto cs) : calcs(cs), calcInfoMap(cim) { }
-    StreamProcessor(char* rp, auto& cim) : readPath(rp), calcInfoMap(cim) { }
-    StreamProcessor(char* rp, auto& cim, auto cs) : readPath(rp), calcs(cs), calcInfoMap(cim) { }
+    StreamProcessor(std::string& rp, auto& cim) : readPath(rp), calcInfoMap(cim) { }
+    StreamProcessor(std::string& rp, auto& cim, auto cs) : readPath(rp), calcs(cs), calcInfoMap(cim) { }
     
     void process() {
         std::ifstream file(readPath);
@@ -78,15 +78,15 @@ public:
         return mapKeys;
     }
 
-    int getCalcInfo(std::string&& symbol, std::string&& key) {
+    long getCalcInfo(std::string&& symbol, std::string&& key) const {
         return calcInfoMap[symbol][key];
     }
 
 private:
-    char* readPath;
+    std::string readPath;
     T calcs;
 
-    std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap;
+    std::unordered_map<std::string, std::unordered_map<std::string, long>>& calcInfoMap;
     std::vector<std::string> mapKeys;
 };
 

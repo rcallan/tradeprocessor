@@ -27,7 +27,7 @@ TEST(CalcsTest, TestMaxTimeGapCalc)
 {
     typedef std::tuple<MaxTimeGapCalc> CalcTypes;
 
-    std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
+    std::unordered_map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 
     StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
 
@@ -42,7 +42,7 @@ TEST(CalcsTest, TestVolCalc)
 {
     typedef std::tuple<VolumeCalc> CalcTypes;
 
-    std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
+    std::unordered_map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 
     StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
 
@@ -57,7 +57,7 @@ TEST(CalcsTest, TestWapCalc)
 {
     typedef std::tuple<WeightedAvgPriceCalc> CalcTypes;
 
-    std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
+    std::unordered_map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 
     StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
 
@@ -72,7 +72,7 @@ TEST(CalcsTest, TestMaxPriceCalc)
 {
     typedef std::tuple<MaxPriceCalc> CalcTypes;
 
-    std::map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
+    std::unordered_map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 
     StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
 

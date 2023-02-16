@@ -1,15 +1,20 @@
+#ifndef ____CalcInfoWriter__
+#define ____CalcInfoWriter__
+
 #include "Calc.h"
 
 class CalcInfoWriter {
 public:
     CalcInfoWriter() = delete;
-    CalcInfoWriter(char* path, std::map<std::string, std::unordered_map<std::string, long>>& cim, std::vector<std::string> mks) 
+    CalcInfoWriter(std::string& path, std::unordered_map<std::string, std::unordered_map<std::string, long>>& cim, std::vector<std::string>&& mks) 
         : writePath(path), calcInfoMap(cim), mapKeys(mks) { }
 
-    void write() {
+    void write() const {
         std::ofstream outputFile(writePath);
 
-        for (const auto& [k, v] : calcInfoMap) {
+        std::map<std::string, std::unordered_map<std::string, long>> sortedMap(std::begin(calcInfoMap), std::end(calcInfoMap));
+
+        for (const auto& [k, v] : sortedMap) {
             outputFile << k << ",";
             for (int i = 0; i < mapKeys.size() - 1; i++) {
                 outputFile << calcInfoMap[k][mapKeys[i]] << ",";
@@ -22,7 +27,9 @@ public:
     }
 
 private:
-    char* writePath;
-    std::map<std::string, std::unordered_map<std::string, long>>& calcInfoMap;
+    std::string writePath;
+    std::unordered_map<std::string, std::unordered_map<std::string, long>>& calcInfoMap;
     std::vector<std::string> mapKeys;
 };
+
+#endif
