@@ -16,7 +16,10 @@ int main(int argc, char** argv) {
 
     std::unordered_map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 
-    StreamProcessor<GetCalcs<CalcTypes>::type> sp(inputPath, calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
+    // CalcTypes init;
+
+    // StreamProcessor<GetCalcs<CalcTypes>::type> sp(inputPath, calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
+    StreamProcessor<CalcTypes> sp(inputPath, calcInfoMap);
     CalcInfoWriter ciw(outputPath, calcInfoMap, sp.getMapKeys());
 
     auto start = std::chrono::steady_clock::now();

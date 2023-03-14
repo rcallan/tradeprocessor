@@ -29,7 +29,8 @@ TEST(CalcsTest, TestMaxTimeGapCalc)
 
     std::unordered_map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 
-    StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
+    // StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
+    StreamProcessor<CalcTypes> sp(calcInfoMap);
 
     for (int i = 0; i < entries.size(); i++) {
         sp.tupleProcess(entries[i]);
@@ -44,7 +45,8 @@ TEST(CalcsTest, TestVolCalc)
 
     std::unordered_map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 
-    StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
+    // StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
+    StreamProcessor<CalcTypes> sp(calcInfoMap);
 
     for (int i = 0; i < entries.size(); i++) {
         sp.tupleProcess(entries[i]);
@@ -59,7 +61,8 @@ TEST(CalcsTest, TestWapCalc)
 
     std::unordered_map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 
-    StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
+    // StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
+    StreamProcessor<CalcTypes> sp(calcInfoMap);
 
     for (int i = 0; i < entries.size(); i++) {
         sp.tupleProcess(entries[i]);
@@ -74,7 +77,8 @@ TEST(CalcsTest, TestMaxPriceCalc)
 
     std::unordered_map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
 
-    StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
+    // StreamProcessor<GetCalcs<CalcTypes>::type> sp(calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
+    StreamProcessor<CalcTypes> sp(calcInfoMap);
 
     for (int i = 0; i < entries.size(); i++) {
         sp.tupleProcess(entries[i]);

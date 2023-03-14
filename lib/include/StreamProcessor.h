@@ -62,7 +62,7 @@ public:
         if constexpr (n > 1) {
             tupleProcess<n - 1>(entry);
         }
-        std::get<n - 1>(calcs)->process(entry, calcInfoMap);
+        std::get<n - 1>(calcs).process(entry, calcInfoMap);
     }
 
     template <int n = std::tuple_size<T>::value>
@@ -70,7 +70,7 @@ public:
         if constexpr (n > 1) {
             tupleGetMapKeys<n - 1>();
         }
-        mapKeys.emplace_back(std::get<n - 1>(calcs)->getMapKey());
+        mapKeys.emplace_back(std::get<n - 1>(calcs).getMapKey());
     }
 
     std::vector<std::string> getMapKeys() {
@@ -84,7 +84,7 @@ public:
 
 private:
     std::string readPath;
-    T calcs;
+    T calcs {};
 
     std::unordered_map<std::string, std::unordered_map<std::string, long>>& calcInfoMap;
     std::vector<std::string> mapKeys;
