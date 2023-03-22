@@ -15,10 +15,7 @@ int main(int argc, char** argv) {
     typedef std::tuple<MaxTimeGapCalc, VolumeCalc, WeightedAvgPriceCalc, MaxPriceCalc> CalcTypes;
 
     std::unordered_map<std::string, std::unordered_map<std::string, long>> calcInfoMap;
-
-    // CalcTypes init;
-
-    // StreamProcessor<GetCalcs<CalcTypes>::type> sp(inputPath, calcInfoMap, GetCalcs<CalcTypes>{}.calcs);
+    
     StreamProcessor<CalcTypes> sp(inputPath, calcInfoMap);
     CalcInfoWriter ciw(outputPath, calcInfoMap, sp.getMapKeys());
 
